@@ -1,4 +1,3 @@
-from __future__ import print_function
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 # number 1 to 10 data
@@ -68,13 +67,7 @@ cross_entropy = tf.reduce_mean(-tf.reduce_sum(ys * tf.log(prediction),
 train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
 
 sess = tf.Session()
-# important step
-# tf.initialize_all_variables() no long valid from
-# 2017-03-02 if using tensorflow >= 0.12
-if int((tf.__version__).split('.')[1]) < 12 and int((tf.__version__).split('.')[0]) < 1:
-    init = tf.initialize_all_variables()
-else:
-    init = tf.global_variables_initializer()
+init = tf.global_variables_initializer()
 sess.run(init)
 
 for i in range(1000):
