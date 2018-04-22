@@ -35,7 +35,7 @@ pred = multilayer_perceptron(x, weights, biases)
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
 optm = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(cost)
 corr = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
-accr = tf.reduce_mean(tf.cast(corr, "float")
+accr = tf.reduce_mean(tf.cast(corr, "float"))
 init = tf.global_variables_initializer()
 print ("FUNCTIONS READY")
 
