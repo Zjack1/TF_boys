@@ -32,13 +32,12 @@ def multilayer_perceptron(_X, _weights, _biases):
     return (tf.matmul(layer_2, _weights['out']) + _biases['out'])
 
 pred = multilayer_perceptron(x, weights, biases)
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+cost = tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
 optm = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(cost)
 corr = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
 accr = tf.reduce_mean(tf.cast(corr, "float"))
 init = tf.global_variables_initializer()
 print ("FUNCTIONS READY")
-
 training_epochs = 20
 batch_size      = 100
 display_step    = 4
@@ -64,4 +63,4 @@ for epoch in range(training_epochs):
         feeds = {x: mnist.test.images, y: mnist.test.labels}
         test_acc = sess.run(accr, feed_dict=feeds)
         print ("TEST ACCURACY: %.3f" % (test_acc))
-    print ("OPTIMIZATION FINISHED")
+    #print ("OPTIMIZATION FINISHED")
