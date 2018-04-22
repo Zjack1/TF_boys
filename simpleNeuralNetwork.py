@@ -1,4 +1,3 @@
-
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -41,28 +40,28 @@ init = tf.global_variables_initializer()
 print ("FUNCTIONS READY")
 
 training_epochs = 20
-    batch_size      = 100
-    display_step    = 4
-    sess = tf.Session()
-    sess.run(init)
+batch_size      = 100
+display_step    = 4
+sess = tf.Session()
+sess.run(init)
     # OPTIMIZE
-    for epoch in range(training_epochs):
-        avg_cost = 0.
-        total_batch = int(mnist.train.num_examples/batch_size)
-        # ITERATION
-        for i in range(total_batch):
-            batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-            feeds = {x: batch_xs, y: batch_ys}
-            sess.run(optm, feed_dict=feeds)
-            avg_cost += sess.run(cost, feed_dict=feeds)
-        avg_cost = avg_cost / total_batch
+for epoch in range(training_epochs):
+    avg_cost = 0.
+    total_batch = int(mnist.train.num_examples/batch_size)
+    # ITERATION
+    for i in range(total_batch):
+        batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+        feeds = {x: batch_xs, y: batch_ys}
+        sess.run(optm, feed_dict=feeds)
+        avg_cost += sess.run(cost, feed_dict=feeds)
+    avg_cost = avg_cost / total_batch
         # DISPLAY
-        if (epoch+1) % display_step == 0:
-            print ("Epoch: %03d/%03d cost: %.9f" % (epoch, training_epochs, avg_cost))
-            feeds = {x: batch_xs, y: batch_ys}
-            train_acc = sess.run(accr, feed_dict=feeds)
-            print ("TRAIN ACCURACY: %.3f" % (train_acc))
-            feeds = {x: mnist.test.images, y: mnist.test.labels}
-            test_acc = sess.run(accr, feed_dict=feeds)
-            print ("TEST ACCURACY: %.3f" % (test_acc))
+    if (epoch+1) % display_step == 0:
+        print ("Epoch: %03d/%03d cost: %.9f" % (epoch, training_epochs, avg_cost))
+        feeds = {x: batch_xs, y: batch_ys}
+        train_acc = sess.run(accr, feed_dict=feeds)
+        print ("TRAIN ACCURACY: %.3f" % (train_acc))
+        feeds = {x: mnist.test.images, y: mnist.test.labels}
+        test_acc = sess.run(accr, feed_dict=feeds)
+        print ("TEST ACCURACY: %.3f" % (test_acc))
     print ("OPTIMIZATION FINISHED")
