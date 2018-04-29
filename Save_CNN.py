@@ -66,7 +66,7 @@ keepratio = tf.placeholder(tf.float32)
 # FUNCTIONS
 
 _pred = conv_basic(x, weights, biases, keepratio)['out']
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(_pred, y))
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=_pred,labels= y))
 optm = tf.train.AdamOptimizer(learning_rate=0.001).minimize(cost)
 _corr = tf.equal(tf.argmax(_pred,1), tf.argmax(y,1)) 
 accr = tf.reduce_mean(tf.cast(_corr, tf.float32)) 
@@ -78,7 +78,7 @@ saver = tf.train.Saver(max_to_keep=3)#最多只保存3个模型
 
 print ("GRAPH READY")
 #1为训练网络保存训练的参数，0为加载训练好的参数进行测试
-do_train = 1
+do_train = 0
 sess = tf.Session()
 sess.run(init)
 
