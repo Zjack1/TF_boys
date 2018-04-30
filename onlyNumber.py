@@ -160,7 +160,7 @@ def crack_captcha_cnn(w_alpha=0.01, b_alpha=0.1):
 # 训练  
 def train_crack_captcha_cnn():  
     output = crack_captcha_cnn()  
-    loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(output, Y))  
+    loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=output, labels=Y))  
     optimizer = tf.train.AdamOptimizer(learning_rate=0.001).minimize(loss)  
     predict = tf.reshape(output, [-1, MAX_CAPTCHA, CHAR_SET_LEN])  
     max_idx_p = tf.argmax(predict, 2)  
@@ -182,9 +182,9 @@ def train_crack_captcha_cnn():
             if step % 10 == 0:  
                 batch_x_test, batch_y_test = get_next_batch(100)  
                 acc = sess.run(accuracy, feed_dict={X: batch_x_test, Y: batch_y_test, keep_prob: 1.})  
-                print(step, acc)  
-                # 如果准确率大于50%,保存模型,完成训练  
-                if acc > 0.50:  
+                print(step,u'准确率:', acc)  
+                # 如果准确率大于80%,保存模型,完成训练  
+                if acc > 0.80:  
                     saver.save(sess, "./model/crack_capcha.model", global_step=step)  
                     break  
    
@@ -194,7 +194,7 @@ def crack_captcha(captcha_image):
    
     saver = tf.train.Saver()  
     with tf.Session() as sess:  
-        saver.restore(sess, "./model/crack_capcha.model-810") 
+        saver.restore(sess, "./model/crack_capcha.model-1570") 
    
         predict = tf.argmax(tf.reshape(output, [-1, MAX_CAPTCHA, CHAR_SET_LEN]), 2)  
         text_list = sess.run(predict, feed_dict={X: [captcha_image], keep_prob: 1})  
@@ -208,12 +208,12 @@ if __name__ == '__main__':
         #ALPHABET = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
         
         text, image = gen_captcha_text_and_image()  #获取4个数字组成的验证码的图片
-        print("验证码图像channel:", image.shape)  # (60, 160, 3)  
+        print(u"验证码图像channel:", image.shape)  # (60, 160, 3)  
         # 图像大小  
         IMAGE_HEIGHT = 60  
         IMAGE_WIDTH = 160  
         MAX_CAPTCHA = len(text)  #4个
-        print("验证码文本最长字符数", MAX_CAPTCHA)
+        print(u"验证码文本最长字符数", MAX_CAPTCHA)
         # 文本转向量  
         #char_set = number + alphabet + ALPHABET + ['_']  # 如果验证码长度小于4, '_'用来补齐  
         char_set = number#数字的识别
@@ -252,7 +252,7 @@ if __name__ == '__main__':
         keep_prob = tf.placeholder(tf.float32) # dropout 
         
         predict_text = crack_captcha(image)  
-        print("正确: {}  预测: {}".format(text, predict_text))  
+        print(u"正确: {}  预测: {}".format(text, predict_text))  
     
     
     
