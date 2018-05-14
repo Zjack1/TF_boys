@@ -55,3 +55,49 @@ for i in range(1000):
     if i%50==0:    
         result = sess.run(merged,feed_dict={xs:x_data,ys:y_data}) #merged也是需要run的    
         writer.add_summary(result,i) #result是summary类型的，需要放入writer中，i步数（x轴）
+####################
+python /home/zj/.local/lib/python2.7/site-packages/tensorboard/main.py --logdir=log
+####################
+
+
+
+
+
+
+import tensorflow as tf
+import numpy as np
+
+tf.set_random_seed(1)
+np.random.seed(1)
+
+# fake data
+x = np.linspace(-1, 1, 100)[:, np.newaxis]          # shape (100, 1)
+noise = np.random.normal(0, 0.125, size=x.shape)
+y = np.power(x, 2) + noise                          # shape (100, 1) + some noise
+
+with tf.variable_scope('Inputs'):
+    tf_x = tf.placeholder(tf.float32, x.shape, name='x')
+    tf_y = tf.placeholder(tf.float32, y.shape, name='y')
+
+with tf.variable_scope('Net'):
+    l1 = tf.layers.dense(tf_x, 10, tf.nn.relu, name='hidden_layer')
+    output = tf.layers.dense(l1, 1, name='output_layer')
+
+    # add to histogram summary
+    tf.summary.histogram('h_out', l1)
+    tf.summary.histogram('pred', output)
+
+loss = tf.losses.mean_squared_error(tf_y, output, scope='loss')
+train_op = tf.train.GradientDescentOptimizer(learning_rate=0.45).minimize(loss)
+tf.summary.scalar('loss_VGG16', loss)     # add loss to scalar summary
+
+sess = tf.Session()
+sess.run(tf.global_variables_initializer())
+
+writer = tf.summary.FileWriter('logss/', sess.graph)     # write to file
+merge_op = tf.summary.merge_all()                       # operation to merge all summary
+
+for step in range(40000):
+    # train and net output
+    _, result = sess.run([train_op, merge_op], {tf_x: x, tf_y: y})
+    writer.add_summary(result, step)
